@@ -3,11 +3,15 @@ package com.droidkit.images.sample;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.common.ImageSaveException;
+import com.droidkit.images.libjpeg.ImageLoadingEx;
 import com.droidkit.images.ops.ImageLoading;
+
+import java.util.logging.Logger;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -22,25 +26,32 @@ public class MainActivity extends ActionBarActivity {
                 "/sdcard/test/girl3",
                 "/sdcard/test/girl4",
 
-                "/sdcard/test/gradient1",
+                "/sdcard/test/red1",
                 "/sdcard/test/gradient2",
                 "/sdcard/test/gradient3",
         };
 
+        long start = System.currentTimeMillis();
         for (int i = 0; i < files.length; i++) {
             try {
                 Bitmap img = ImageLoading.loadBitmap(files[i] + ".jpg");
-                // ImageLoading.saveBmp(img, files[i] + "_orig.bmp");
-                for (int q = 80; q > 60; q--) {
-                    ImageLoading.saveJpeg(img, files[i] + "_" + q + ".jpg", q);
-                }
             } catch (ImageLoadException e) {
-                e.printStackTrace();
-            } catch (ImageSaveException e) {
                 e.printStackTrace();
             }
         }
+        long defaultDuration = System.currentTimeMillis() - start;
+        start = System.currentTimeMillis();
+        for (int i = 0; i < files.length; i++) {
+            try {
+                Bitmap img = ImageLoadingEx.loadLibJpeg(files[i] + ".jpg");
+            } catch (ImageLoadException e) {
+                e.printStackTrace();
+            }
+        }
+        long libjpegDuration = System.currentTimeMillis() - start;
 
+        Log.d("LIBJPEG", "Default duration: " + defaultDuration + " ms");
+        Log.d("LIBJPEG", "Libjpeg duration: " + libjpegDuration + " ms");
 
         setContentView(R.layout.activity_main);
     }
