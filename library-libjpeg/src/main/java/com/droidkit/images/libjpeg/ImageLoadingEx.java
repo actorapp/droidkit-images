@@ -14,6 +14,9 @@ import java.io.IOException;
  * Created by ex3ndr on 11.08.14.
  */
 public class ImageLoadingEx extends ImageLoading {
+    protected ImageLoadingEx() {
+    }
+
     public static Bitmap loadLibJpeg(String fileName) throws ImageLoadException {
         FileSource source = new FileSource(fileName);
         ImageMetadata metadata = source.getImageMetadata();

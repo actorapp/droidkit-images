@@ -10,6 +10,7 @@ import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.common.ImageSaveException;
 import com.droidkit.images.libjpeg.ImageLoadingEx;
 import com.droidkit.images.ops.ImageLoading;
+import com.droidkit.images.ops.ImageScaling;
 
 import java.util.logging.Logger;
 
@@ -31,27 +32,39 @@ public class MainActivity extends ActionBarActivity {
                 "/sdcard/test/gradient3",
         };
 
-        long start = System.currentTimeMillis();
         for (int i = 0; i < files.length; i++) {
             try {
                 Bitmap img = ImageLoading.loadBitmap(files[i] + ".jpg");
+                Bitmap scaled = ImageScaling.scaleFit(img, 300, 300);
+                ImageLoading.saveBmp(scaled, files[i] + "_scaled2.bmp");
             } catch (ImageLoadException e) {
+                e.printStackTrace();
+            } catch (ImageSaveException e) {
                 e.printStackTrace();
             }
         }
-        long defaultDuration = System.currentTimeMillis() - start;
-        start = System.currentTimeMillis();
-        for (int i = 0; i < files.length; i++) {
-            try {
-                Bitmap img = ImageLoadingEx.loadLibJpeg(files[i] + ".jpg");
-            } catch (ImageLoadException e) {
-                e.printStackTrace();
-            }
-        }
-        long libjpegDuration = System.currentTimeMillis() - start;
 
-        Log.d("LIBJPEG", "Default duration: " + defaultDuration + " ms");
-        Log.d("LIBJPEG", "Libjpeg duration: " + libjpegDuration + " ms");
+//        long start = System.currentTimeMillis();
+//        for (int i = 0; i < files.length; i++) {
+//            try {
+//                Bitmap img = ImageLoading.loadBitmap(files[i] + ".jpg");
+//            } catch (ImageLoadException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        long defaultDuration = System.currentTimeMillis() - start;
+//        start = System.currentTimeMillis();
+//        for (int i = 0; i < files.length; i++) {
+//            try {
+//                Bitmap img = ImageLoadingEx.loadLibJpeg(files[i] + ".jpg");
+//            } catch (ImageLoadException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        long libjpegDuration = System.currentTimeMillis() - start;
+//
+//        Log.d("LIBJPEG", "Default duration: " + defaultDuration + " ms");
+//        Log.d("LIBJPEG", "Libjpeg duration: " + libjpegDuration + " ms");
 
         setContentView(R.layout.activity_main);
     }

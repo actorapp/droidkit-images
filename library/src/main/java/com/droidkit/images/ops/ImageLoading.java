@@ -195,4 +195,7 @@ public class ImageLoading {
         }
         return scale;
     }
+
+    protected ImageLoading() {
+    }
 }
