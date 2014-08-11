@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 /**
- * Created by ex3ndr on 11.08.14.
+ * Drawing operations for bitmaps
  */
 public class ImageDrawing {
 

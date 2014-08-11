@@ -1,27 +1,48 @@
 package com.droidkit.images.common;
 
 /**
- * Created by ex3ndr on 08.08.14.
+ * Image metadata
  */
 public class ImageMetadata {
     private int w;
     private int h;
     private ImageFormat format;
 
-    public ImageMetadata(int w, int h,ImageFormat format) {
+    /**
+     * Creating of ImageMetadata
+     * @param w width of image
+     * @param h height of image
+     * @param format format of image
+     */
+    public ImageMetadata(int w, int h, ImageFormat format) {
         this.w = w;
         this.h = h;
         this.format = format;
     }
 
+    /**
+     * Width of image
+     *
+     * @return width
+     */
     public int getW() {
         return w;
     }
 
+    /**
+     * Height of image
+     *
+     * @return height
+     */
     public int getH() {
         return h;
     }
 
+    /**
+     * Format of image
+     *
+     * @return format
+     */
     public ImageFormat getFormat() {
         return format;
     }

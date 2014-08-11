@@ -3,7 +3,7 @@ package com.droidkit.images.common;
 import java.io.IOException;
 
 /**
- * Created by ex3ndr on 08.08.14.
+ * Exception while image loading
  */
 public class ImageLoadException extends IOException {
     public ImageLoadException() {

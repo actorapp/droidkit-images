@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * Created by ex3ndr on 09.08.14.
+ * Image loading
  */
 public class ImageLoading {
 
@@ -22,67 +22,188 @@ public class ImageLoading {
     public static final int JPEG_QUALITY = 80;
     public static final int JPEG_QUALITY_HQ = 90;
 
-    // Public load methods
-
+    /**
+     * Loading bitmap without any modifications
+     *
+     * @param fileName Image file name
+     * @return loaded bitmap (always not null)
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static Bitmap loadBitmap(String fileName) throws ImageLoadException {
         return loadBitmap(new FileSource(fileName));
     }
 
+    /**
+     * Loading bitmap with scaling
+     *
+     * @param fileName Image file name
+     * @param scale    divider of size, might be factor of two
+     * @return loaded bitmap (always not null)
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static Bitmap loadBitmap(String fileName, int scale) throws ImageLoadException {
         return loadBitmap(new FileSource(fileName), scale);
     }
 
+    /**
+     * Loading bitmap with optimized loaded size less than 1.4 MPX
+     *
+     * @param fileName Image file name
+     * @return loaded bitmap (always not null)
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static Bitmap loadBitmapOptimized(String fileName) throws ImageLoadException {
         return loadBitmapOptimized(fileName, MAX_PIXELS);
     }
 
+    /**
+     * Loading bitmap with optimized loaded size less than 2.2 MPX
+     *
+     * @param fileName Image file name
+     * @return loaded bitmap (always not null)
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static Bitmap loadBitmapOptimizedHQ(String fileName) throws ImageLoadException {
         return loadBitmapOptimized(fileName, MAX_PIXELS_HQ);
     }
 
+    /**
+     * Loading bitmap with optimized loaded size less than specific pixels count
+     *
+     * @param fileName Image file name
+     * @param limit    maximum pixels size
+     * @return loaded bitmap (always not null)
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static Bitmap loadBitmapOptimized(String fileName, int limit) throws ImageLoadException {
         return loadBitmapOptimized(new FileSource(fileName), limit);
     }
 
-    // Public reuse methods
+    /**
+     * Loading bitmap with using reuse bitmap with the same size of source image.
+     * If it is unable to load with reuse method tries to load without it.
+     * Reuse works only in 3.0+
+     *
+     * @param fileName Image file name
+     * @param dest     reuse bitmap
+     * @return result of loading
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static ReuseResult loadReuseExact(String fileName, Bitmap dest) throws ImageLoadException {
         return loadBitmapReuseExact(new FileSource(fileName), dest);
     }
 
+    /**
+     * Loading bitmap with using reuse bitmap with the different size of source image.
+     * If it is unable to load with reuse method tries to load without it.
+     * Reuse works only for Android 4.4+
+     *
+     * @param fileName Image file name
+     * @param dest     reuse bitmap
+     * @return result of loading
+     * @throws ImageLoadException if it is unable to load file
+     */
     public static ReuseResult loadReuse(String fileName, Bitmap dest) throws ImageLoadException {
         return loadBitmapReuse(new FileSource(fileName), dest);
     }
 
-    // Public save methods
 
+    /**
+     * Saving image in jpeg to byte array with quality 80
+     *
+     * @param src source image
+     * @return saved data
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static byte[] save(Bitmap src) throws ImageSaveException {
         return save(src, Bitmap.CompressFormat.JPEG, JPEG_QUALITY);
     }
 
+    /**
+     * Saving image in jpeg to byte array with better quality 90
+     *
+     * @param src source image
+     * @return saved data
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static byte[] saveHq(Bitmap src) throws ImageSaveException {
         return save(src, Bitmap.CompressFormat.JPEG, JPEG_QUALITY_HQ);
     }
 
+    /**
+     * Saving image in jpeg to byte array with specific quality
+     *
+     * @param src     source image
+     * @param quality jpeg quality
+     * @return saved data
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static byte[] saveJpeg(Bitmap src, int quality) throws ImageSaveException {
         return save(src, Bitmap.CompressFormat.JPEG, quality);
     }
 
+    /**
+     * Saving image in png to byte array with specific quality
+     *
+     * @param src source image
+     * @return saved data
+     * @throws ImageSaveException if it is unable to save image
+     */
+    public static byte[] savePng(Bitmap src) throws ImageSaveException {
+        return save(src, Bitmap.CompressFormat.PNG, 100);
+    }
+
+    /**
+     * Saving image in jpeg to file with quality 80
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static void save(Bitmap src, String fileName) throws ImageSaveException {
         saveJpeg(src, fileName, JPEG_QUALITY);
     }
 
+    /**
+     * Saving image in jpeg to file with better quality 90
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static void saveHq(Bitmap src, String fileName) throws ImageSaveException {
         saveJpeg(src, fileName, JPEG_QUALITY_HQ);
     }
 
+    /**
+     * Saving image in jpeg to file with better quality 90
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static void saveJpeg(Bitmap src, String fileName, int quality) throws ImageSaveException {
         save(src, fileName, Bitmap.CompressFormat.JPEG, quality);
     }
 
+    /**
+     * Saving image in png to file
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static void savePng(Bitmap src, String fileName) throws ImageSaveException {
         save(src, fileName, Bitmap.CompressFormat.PNG, 100);
     }
 
+    /**
+     * Saving image in bmp to file
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
     public static void saveBmp(Bitmap src, String fileName) throws ImageSaveException {
         try {
             BitmapUtil.save(src, fileName);
@@ -91,20 +212,50 @@ public class ImageLoading {
         }
     }
 
-    // Private  methods
+    /**
+     * Loading bitmap from ImageSource
+     *
+     * @param source image source
+     * @return loaded bitmap
+     * @throws ImageLoadException if it is unable to load image
+     */
     private static Bitmap loadBitmap(ImageSource source) throws ImageLoadException {
         return source.loadBitmap();
     }
 
+    /**
+     * Loading bitmap from ImageSource with limit of amout of pixels
+     *
+     * @param source image source
+     * @param limit  maximum pixels size
+     * @return loaded bitmap
+     * @throws ImageLoadException if it is unable to load image
+     */
     private static Bitmap loadBitmapOptimized(ImageSource source, int limit) throws ImageLoadException {
         int scale = getScaleFactor(source.getImageMetadata(), limit);
         return loadBitmap(source, scale);
     }
 
+    /**
+     * Loading bitmap from ImageSource with specific scale
+     *
+     * @param source image source
+     * @param scale  divider of size, might be factor of two
+     * @return loaded bitmap
+     * @throws ImageLoadException if it is unable to load image
+     */
     private static Bitmap loadBitmap(ImageSource source, int scale) throws ImageLoadException {
         return source.loadBitmap(scale);
     }
 
+    /**
+     * Loading image with reuse bitmap of same size as source
+     *
+     * @param source image source
+     * @param dest   destination bitmap
+     * @return loaded bitmap result
+     * @throws ImageLoadException if it is unable to load image
+     */
     private static ReuseResult loadBitmapReuseExact(ImageSource source, Bitmap dest) throws ImageLoadException {
         ImageMetadata metadata = source.getImageMetadata();
         boolean tryReuse = false;
@@ -127,6 +278,14 @@ public class ImageLoading {
         }
     }
 
+    /**
+     * Loading image with reuse bitmap
+     *
+     * @param source image source
+     * @param dest   destination bitmap
+     * @return loaded bitmap result
+     * @throws ImageLoadException if it is unable to load image
+     */
     private static ReuseResult loadBitmapReuse(ImageSource source, Bitmap dest) throws ImageLoadException {
         ImageMetadata metadata = source.getImageMetadata();
         boolean tryReuse = false;
@@ -148,6 +307,15 @@ public class ImageLoading {
         }
     }
 
+    /**
+     * Saving image to file
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @param format   image format
+     * @param quality  jpeg quality
+     * @throws ImageSaveException if it is unable to save image
+     */
     private static void save(Bitmap src, String fileName, Bitmap.CompressFormat format, int quality) throws ImageSaveException {
         FileOutputStream outputStream = null;
         try {
@@ -167,6 +335,14 @@ public class ImageLoading {
         }
     }
 
+    /**
+     * Saving image to byte array
+     *
+     * @param src     source image
+     * @param format  image format
+     * @param quality jpeg quality
+     * @return saved image
+     */
     private static byte[] save(Bitmap src, Bitmap.CompressFormat format, int quality) {
         ByteArrayOutputStream outputStream = null;
         try {
@@ -184,6 +360,13 @@ public class ImageLoading {
         }
     }
 
+    /**
+     * Calculating scale factor with limit of pixel amount
+     *
+     * @param metadata  image metadata
+     * @param maxPixels limit for pixels
+     * @return scale factor
+     */
     private static int getScaleFactor(ImageMetadata metadata, int maxPixels) {
         int scale = 1;
         int scaledW = metadata.getW();

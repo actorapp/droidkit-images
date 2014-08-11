@@ -13,16 +13,24 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Created by ex3ndr on 08.08.14.
+ * File source
  */
 public class FileSource extends ImageSource {
 
     private String fileName;
 
+    /**
+     * Creating new file source
+     * @param fileName File Name of picture
+     */
     public FileSource(String fileName) {
         this.fileName = fileName;
     }
 
+    /**
+     * File name of image
+     * @return file name
+     */
     public String getFileName() {
         return fileName;
     }

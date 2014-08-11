@@ -3,7 +3,7 @@ package com.droidkit.images.common;
 import java.io.IOException;
 
 /**
- * Created by ex3ndr on 10.08.14.
+ * Exception for image saving
  */
 public class ImageSaveException extends IOException {
     public ImageSaveException() {
