@@ -6,10 +6,12 @@ package com.droidkit.images.common;
 public class ImageMetadata {
     private int w;
     private int h;
+    private ImageFormat format;
 
-    public ImageMetadata(int w, int h) {
+    public ImageMetadata(int w, int h,ImageFormat format) {
         this.w = w;
         this.h = h;
+        this.format = format;
     }
 
     public int getW() {
@@ -18,5 +20,9 @@ public class ImageMetadata {
 
     public int getH() {
         return h;
+    }
+
+    public ImageFormat getFormat() {
+        return format;
     }
 }

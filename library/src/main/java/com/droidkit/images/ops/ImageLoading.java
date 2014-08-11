@@ -1,9 +1,8 @@
 package com.droidkit.images.ops;
 
 import android.graphics.Bitmap;
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.common.ImageMetadata;
-import com.droidkit.images.common.ImageSaveException;
+import android.os.Build;
+import com.droidkit.images.common.*;
 import com.droidkit.images.sources.FileSource;
 import com.droidkit.images.sources.ImageSource;
 import com.droidkit.images.util.BitmapUtil;
@@ -23,7 +22,7 @@ public class ImageLoading {
     public static final int JPEG_QUALITY = 80;
     public static final int JPEG_QUALITY_HQ = 90;
 
-    // Public methods
+    // Public load methods
 
     public static Bitmap loadBitmap(String fileName) throws ImageLoadException {
         return loadBitmap(new FileSource(fileName));
@@ -44,6 +43,17 @@ public class ImageLoading {
     public static Bitmap loadBitmapOptimized(String fileName, int limit) throws ImageLoadException {
         return loadBitmapOptimized(new FileSource(fileName), limit);
     }
+
+    // Public reuse methods
+    public static ReuseResult loadReuseExact(String fileName, Bitmap dest) throws ImageLoadException {
+        return loadBitmapReuseExact(new FileSource(fileName), dest);
+    }
+
+    public static ReuseResult loadReuse(String fileName, Bitmap dest) throws ImageLoadException {
+        return loadBitmapReuse(new FileSource(fileName), dest);
+    }
+
+    // Public save methods
 
     public static byte[] save(Bitmap src) throws ImageSaveException {
         return save(src, Bitmap.CompressFormat.JPEG, JPEG_QUALITY);
@@ -86,13 +96,56 @@ public class ImageLoading {
         return source.loadBitmap();
     }
 
+    private static Bitmap loadBitmapOptimized(ImageSource source, int limit) throws ImageLoadException {
+        int scale = getScaleFactor(source.getImageMetadata(), limit);
+        return loadBitmap(source, scale);
+    }
+
     private static Bitmap loadBitmap(ImageSource source, int scale) throws ImageLoadException {
         return source.loadBitmap(scale);
     }
 
-    private static Bitmap loadBitmapOptimized(ImageSource source, int limit) throws ImageLoadException {
-        int scale = getScaleFactor(source.getImageMetadata(), limit);
-        return loadBitmap(source, scale);
+    private static ReuseResult loadBitmapReuseExact(ImageSource source, Bitmap dest) throws ImageLoadException {
+        ImageMetadata metadata = source.getImageMetadata();
+        boolean tryReuse = false;
+        if (dest.isMutable()
+                && dest.getWidth() == metadata.getW()
+                && dest.getHeight() == metadata.getH()) {
+            if (Build.VERSION.SDK_INT >= 19) {
+                tryReuse = true;
+            } else if (Build.VERSION.SDK_INT >= 11) {
+                if (metadata.getFormat() == ImageFormat.JPEG || metadata.getFormat() != ImageFormat.PNG) {
+                    tryReuse = true;
+                }
+            }
+        }
+
+        if (tryReuse) {
+            return source.loadBitmap(dest);
+        } else {
+            return new ReuseResult(loadBitmap(source), false);
+        }
+    }
+
+    private static ReuseResult loadBitmapReuse(ImageSource source, Bitmap dest) throws ImageLoadException {
+        ImageMetadata metadata = source.getImageMetadata();
+        boolean tryReuse = false;
+        if (dest.isMutable()) {
+            if (Build.VERSION.SDK_INT >= 19) {
+                tryReuse = dest.getAllocationByteCount() >= metadata.getW() * metadata.getH() * 4;
+            } else if (Build.VERSION.SDK_INT >= 11) {
+                if (metadata.getFormat() == ImageFormat.JPEG || metadata.getFormat() != ImageFormat.PNG) {
+                    tryReuse = dest.getWidth() == metadata.getW()
+                            && dest.getHeight() == metadata.getH();
+                }
+            }
+        }
+
+        if (tryReuse) {
+            return source.loadBitmap(dest);
+        } else {
+            return new ReuseResult(loadBitmap(source), false);
+        }
     }
 
     private static void save(Bitmap src, String fileName, Bitmap.CompressFormat format, int quality) throws ImageSaveException {

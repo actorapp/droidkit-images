@@ -4,8 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Build;
+import com.droidkit.images.common.ImageFormat;
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.common.ImageMetadata;
+import com.droidkit.images.common.ReuseResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +57,18 @@ public class FileSource extends ImageSource {
             // e.printStackTrace();
         }
 
-        return new ImageMetadata(w, h);
+        ImageFormat format = ImageFormat.UNKNOWN;
+        if ("image/jpeg".equals(o.outMimeType) || "image/jpg".equals(o.outMimeType)) {
+            format = ImageFormat.JPEG;
+        } else if ("image/gif".equals(o.outMimeType)) {
+            format = ImageFormat.GIF;
+        } else if ("image/bmp".equals(o.outMimeType)) {
+            format = ImageFormat.BMP;
+        } else if ("image/webp".equals(o.outMimeType)) {
+            format = ImageFormat.WEBP;
+        }
+
+        return new ImageMetadata(w, h, format);
     }
 
     @Override
@@ -70,6 +83,7 @@ public class FileSource extends ImageSource {
         o.inScaled = false;
         o.inTempStorage = BITMAP_TMP.get();
         o.inSampleSize = scale;
+        o.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
         if (Build.VERSION.SDK_INT >= 10) {
             o.inPreferQualityOverSpeed = true;
@@ -88,5 +102,30 @@ public class FileSource extends ImageSource {
             throw new ImageLoadException("BitmapFactory.decodeFile return null");
         }
         return res;
+    }
+
+    @Override
+    public ReuseResult loadBitmap(Bitmap reuse) throws ImageLoadException {
+        if (Build.VERSION.SDK_INT < 11) {
+            throw new ImageLoadException("Bitmap reuse not available before HONEYCOMB");
+        }
+
+        if (!new File(fileName).exists()) {
+            throw new ImageLoadException("File not exists");
+        }
+
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inScaled = false;
+        o.inTempStorage = BITMAP_TMP.get();
+        o.inPreferQualityOverSpeed = true;
+        o.inBitmap = reuse;
+        o.inMutable = true;
+        o.inPreferredConfig = Bitmap.Config.ARGB_8888;
+
+        Bitmap res = BitmapFactory.decodeFile(fileName, o);
+        if (res == null) {
+            throw new ImageLoadException("BitmapFactory.decodeFile return null");
+        }
+        return new ReuseResult(res, true);
     }
 }
