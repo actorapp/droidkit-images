@@ -59,10 +59,26 @@ public class ImageDrawing {
         canvas.setBitmap(null);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with applied mask.
+     *
+     * @param src  source bitmap
+     * @param mask bitmap mask
+     * @param dest destination bitmap
+     */
+
     public static void drawMasked(Bitmap src, Drawable mask, Bitmap dest) {
         drawMasked(src, mask, dest, CLEAR_COLOR);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with applied mask.
+     *
+     * @param src        source bitmap
+     * @param mask       bitmap mask
+     * @param dest       destination bitmap
+     * @param clearColor clear color
+     */
     public static void drawMasked(Bitmap src, Drawable mask, Bitmap dest, int clearColor) {
         clearBitmap(dest, clearColor);
         Canvas canvas = new Canvas(dest);
@@ -84,10 +100,25 @@ public class ImageDrawing {
         canvas.setBitmap(null);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with rounded corners
+     *
+     * @param src    source bitmap
+     * @param dest   destination bitmap
+     * @param radius radius in destination bitmap scale
+     */
     public static void drawRoundedCorners(Bitmap src, Bitmap dest, int radius) {
         drawRoundedCorners(src, dest, radius, CLEAR_COLOR);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with rounded corners
+     *
+     * @param src        source bitmap
+     * @param dest       destination bitmap
+     * @param radius     radius in destination bitmap scale
+     * @param clearColor clear color
+     */
     public static void drawRoundedCorners(Bitmap src, Bitmap dest, int radius, int clearColor) {
         clearBitmap(dest, clearColor);
         Canvas canvas = new Canvas(dest);
@@ -115,10 +146,23 @@ public class ImageDrawing {
         canvas.setBitmap(null);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with round mask. Dest might be squared, src is recommended to be square
+     *
+     * @param src  source bitmap
+     * @param dest destination bitmap
+     */
     public static void drawInRound(Bitmap src, Bitmap dest) {
         drawInRound(src, dest, CLEAR_COLOR);
     }
 
+    /**
+     * Drawing src bitmap to dest bitmap with round mask. Dest might be squared, src is recommended to be square
+     *
+     * @param src        source bitmap
+     * @param dest       destination bitmap
+     * @param clearColor clear color
+     */
     public static void drawInRound(Bitmap src, Bitmap dest, int clearColor) {
         if (dest.getWidth() != dest.getHeight()) {
             throw new RuntimeException("dest Bitmap must have square size");

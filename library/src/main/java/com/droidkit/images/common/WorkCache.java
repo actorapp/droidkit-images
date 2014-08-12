@@ -5,9 +5,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 /**
- * Created by ex3ndr on 12.08.14.
+ * Cache for reusing graphics primitives
  */
 public class WorkCache {
+    /**
+     * Used for BitmapFactory.Options.inTempStorage
+     */
     public static ThreadLocal<byte[]> BITMAP_TMP = new ThreadLocal<byte[]>() {
         @Override
         protected byte[] initialValue() {

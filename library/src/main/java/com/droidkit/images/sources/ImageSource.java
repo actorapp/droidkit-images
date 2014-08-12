@@ -10,8 +10,6 @@ import com.droidkit.images.common.ReuseResult;
  */
 public abstract class ImageSource {
 
-
-
     private ImageMetadata imageMetadata;
 
     /**
