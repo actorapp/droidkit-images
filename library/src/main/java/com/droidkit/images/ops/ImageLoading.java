@@ -21,6 +21,7 @@ public class ImageLoading {
 
     public static final int JPEG_QUALITY = 80;
     public static final int JPEG_QUALITY_HQ = 90;
+    public static final int JPEG_QUALITY_LOW = 55;
 
     /**
      * Loading bitmap without any modifications
@@ -162,6 +163,17 @@ public class ImageLoading {
      */
     public static void save(Bitmap src, String fileName) throws ImageSaveException {
         saveJpeg(src, fileName, JPEG_QUALITY);
+    }
+
+    /**
+     * Saving image in jpeg to file with quality 55
+     *
+     * @param src      source image
+     * @param fileName destination file name
+     * @throws ImageSaveException if it is unable to save image
+     */
+    public static void saveLq(Bitmap src, String fileName) throws ImageSaveException {
+        saveJpeg(src, fileName, JPEG_QUALITY_LOW);
     }
 
     /**

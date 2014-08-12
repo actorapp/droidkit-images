@@ -1,1 +1,1 @@
-include ':sample', ':library', ':library-libjpeg'
+include ':sample', ':library', ':library-libjpeg', ':library-effects'

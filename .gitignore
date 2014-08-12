@@ -3,6 +3,7 @@
 .DS_Store
 library/build
 library-libjpeg/build
+library-effects/build
 sample/build
 .idea
 *.iml

@@ -60,7 +60,7 @@ jint throwUnsupported(JNIEnv *env, char *message ) {
     return (*env)->ThrowNew( env, exClass, message );
 }
 
-JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecodeBitmapBlend(
+JNIEXPORT void Java_com_droidkit_images_libjpeg_LibjpegNative_nativeDecodeBitmapBlend(
                                                              JNIEnv* env,
                                                              jclass clazz,
                                                              jstring fileName,
@@ -155,7 +155,7 @@ JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecode
     fclose(infile);
 }
 
-JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecodeBitmap(
+JNIEXPORT void Java_com_droidkit_images_libjpeg_LibjpegNative_nativeDecodeBitmap(
                                                              JNIEnv* env,
                                                              jclass clazz,
                                                              jstring fileName,
@@ -244,7 +244,7 @@ JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecode
     fclose(infile);
 }
 
-JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecodeArray(
+JNIEXPORT void Java_com_droidkit_images_libjpeg_LibjpegNative_nativeDecodeArray(
                                                              JNIEnv* env,
                                                              jclass clazz,
                                                              jbyteArray array,
@@ -327,7 +327,7 @@ JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecode
     (*env)->ReleaseByteArrayElements(env, array, b, JNI_ABORT);
 }
 
-JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecodeBitmapScaled(
+JNIEXPORT void Java_com_droidkit_images_libjpeg_LibjpegNative_nativeDecodeBitmapScaled(
                                                              JNIEnv* env,
                                                              jclass clazz,
                                                              jstring fileName,
@@ -419,7 +419,7 @@ JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeDecode
     fclose(infile);
 }
 
-JNIEXPORT void Java_com_droidkit_images_libjpeg_utils_LibjpegNative_nativeSaveBitmap(
+JNIEXPORT void Java_com_droidkit_images_libjpeg_LibjpegNative_nativeSaveBitmap(
                                                              JNIEnv* env,
                                                              jclass clazz,
                                                              jobject bitmap,
