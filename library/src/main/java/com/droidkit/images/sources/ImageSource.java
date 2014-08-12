@@ -10,12 +10,7 @@ import com.droidkit.images.common.ReuseResult;
  */
 public abstract class ImageSource {
 
-    protected static ThreadLocal<byte[]> BITMAP_TMP = new ThreadLocal<byte[]>() {
-        @Override
-        protected byte[] initialValue() {
-            return new byte[16 * 1024];
-        }
-    };
+
 
     private ImageMetadata imageMetadata;
 

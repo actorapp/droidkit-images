@@ -4,10 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.os.Build;
-import com.droidkit.images.common.ImageFormat;
-import com.droidkit.images.common.ImageLoadException;
-import com.droidkit.images.common.ImageMetadata;
-import com.droidkit.images.common.ReuseResult;
+import com.droidkit.images.common.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,7 +36,7 @@ public class FileSource extends ImageSource {
     protected ImageMetadata loadMetadata() throws ImageLoadException {
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
-        o.inTempStorage = BITMAP_TMP.get();
+        o.inTempStorage = WorkCache.BITMAP_TMP.get();
         BitmapFactory.decodeFile(fileName, o);
         if (o.outWidth == 0 || o.outHeight == 0) {
             throw new ImageLoadException("BitmapFactory.decodeFile: unable to load file");
@@ -89,7 +86,7 @@ public class FileSource extends ImageSource {
         BitmapFactory.Options o = new BitmapFactory.Options();
 
         o.inScaled = false;
-        o.inTempStorage = BITMAP_TMP.get();
+        o.inTempStorage = WorkCache.BITMAP_TMP.get();
         o.inSampleSize = scale;
         o.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
@@ -124,7 +121,7 @@ public class FileSource extends ImageSource {
 
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inScaled = false;
-        o.inTempStorage = BITMAP_TMP.get();
+        o.inTempStorage = WorkCache.BITMAP_TMP.get();
         o.inPreferQualityOverSpeed = true;
         o.inBitmap = reuse;
         o.inMutable = true;

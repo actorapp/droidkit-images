@@ -1,8 +1,11 @@
 package com.droidkit.images.ops;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
+import android.graphics.*;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ClipDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.NinePatchDrawable;
+import com.droidkit.images.common.WorkCache;
 
 /**
  * Drawing operations for bitmaps
@@ -53,6 +56,94 @@ public class ImageDrawing {
         clearBitmap(src, color);
         Canvas canvas = new Canvas(dest);
         canvas.drawBitmap(src, 0, 0, null);
+        canvas.setBitmap(null);
+    }
+
+    public static void drawMasked(Bitmap src, Drawable mask, Bitmap dest) {
+        drawMasked(src, mask, dest, CLEAR_COLOR);
+    }
+
+    public static void drawMasked(Bitmap src, Drawable mask, Bitmap dest, int clearColor) {
+        clearBitmap(dest, clearColor);
+        Canvas canvas = new Canvas(dest);
+
+        canvas.drawBitmap(src,
+                new Rect(0, 0, src.getWidth(), src.getHeight()),
+                new Rect(0, 0, dest.getWidth(), dest.getHeight()),
+                new Paint(Paint.FILTER_BITMAP_FLAG));
+
+        if (mask instanceof BitmapDrawable) {
+            ((BitmapDrawable) mask).getPaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        } else if (mask instanceof NinePatchDrawable) {
+            ((NinePatchDrawable) mask).getPaint().setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+        } else {
+            throw new RuntimeException("Supported only BitmapDrawable or NinePatchDrawable");
+        }
+        mask.setBounds(0, 0, mask.getIntrinsicWidth(), mask.getIntrinsicHeight());
+        mask.draw(canvas);
+        canvas.setBitmap(null);
+    }
+
+    public static void drawRoundedCorners(Bitmap src, Bitmap dest, int radius) {
+        drawRoundedCorners(src, dest, radius, CLEAR_COLOR);
+    }
+
+    public static void drawRoundedCorners(Bitmap src, Bitmap dest, int radius, int clearColor) {
+        clearBitmap(dest, clearColor);
+        Canvas canvas = new Canvas(dest);
+
+        Rect sourceRect = WorkCache.RECT1.get();
+        Rect destRect = WorkCache.RECT2.get();
+        sourceRect.set(0, 0, src.getWidth(), src.getHeight());
+        destRect.set(0, 0, dest.getWidth(), dest.getHeight());
+
+        RectF roundRect = WorkCache.RECTF1.get();
+        roundRect.set(0, 0, dest.getWidth(), dest.getHeight());
+
+        Paint paint = WorkCache.PAINT.get();
+        paint.reset();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        canvas.drawRoundRect(roundRect, radius, radius, paint);
+
+        paint.reset();
+        paint.setFilterBitmap(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(src, sourceRect, destRect, paint);
+
+        canvas.setBitmap(null);
+    }
+
+    public static void drawInRound(Bitmap src, Bitmap dest) {
+        drawInRound(src, dest, CLEAR_COLOR);
+    }
+
+    public static void drawInRound(Bitmap src, Bitmap dest, int clearColor) {
+        if (dest.getWidth() != dest.getHeight()) {
+            throw new RuntimeException("dest Bitmap must have square size");
+        }
+        clearBitmap(dest, clearColor);
+        Canvas canvas = new Canvas(dest);
+
+        int r = dest.getWidth() / 2;
+        Rect sourceRect = WorkCache.RECT1.get();
+        Rect destRect = WorkCache.RECT2.get();
+        sourceRect.set(0, 0, src.getWidth(), src.getHeight());
+        destRect.set(0, 0, dest.getWidth(), dest.getHeight());
+
+        Paint paint = WorkCache.PAINT.get();
+        paint.reset();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.RED);
+        paint.setAntiAlias(true);
+        canvas.drawCircle(r, r, r, paint);
+
+        paint.reset();
+        paint.setFilterBitmap(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(src, sourceRect, destRect, paint);
+
         canvas.setBitmap(null);
     }
 }

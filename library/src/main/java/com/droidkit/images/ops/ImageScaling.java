@@ -1,6 +1,7 @@
 package com.droidkit.images.ops;
 
 import android.graphics.*;
+import com.droidkit.images.common.WorkCache;
 
 import static com.droidkit.images.ops.ImageDrawing.*;
 
@@ -10,14 +11,6 @@ import static com.droidkit.images.ops.ImageDrawing.*;
  * @author Stepan ex3ndr Korshakov me@ex3ndr.com
  */
 public class ImageScaling {
-
-    // ThreadLocal cache for paint objects
-    private static ThreadLocal<Paint> PAINT_FILTER = new ThreadLocal<Paint>() {
-        @Override
-        protected Paint initialValue() {
-            return new Paint(Paint.FILTER_BITMAP_FLAG);
-        }
-    };
 
     /**
      * Scaling bitmap to fill rect with centering. Method keep aspect ratio.
@@ -138,7 +131,7 @@ public class ImageScaling {
      * @param clearColor color for clearing dest before drawing
      */
     public static void scale(Bitmap src, Bitmap dest, int clearColor) {
-        scale(src, dest, clearColor, 0, 0, src.getWidth(), src.getWidth(), 0, 0, dest.getWidth(), dest.getHeight());
+        scale(src, dest, clearColor, 0, 0, src.getWidth(), src.getHeight(), 0, 0, dest.getWidth(), dest.getHeight());
     }
 
     /**
@@ -183,7 +176,9 @@ public class ImageScaling {
                              int dw, int dh) {
         clearBitmap(dest, clearColor);
         Canvas canvas = new Canvas(dest);
-        canvas.drawBitmap(src, new Rect(x + 1, y + 1, sw - 1, sh - 1), new Rect(dx, dy, dw, dh), PAINT_FILTER.get());
+        Paint paint = WorkCache.PAINT.get();
+        paint.setFilterBitmap(true);
+        canvas.drawBitmap(src, new Rect(x + 1, y + 1, sw - 1, sh - 1), new Rect(dx, dy, dw, dh), paint);
         canvas.setBitmap(null);
     }
 
