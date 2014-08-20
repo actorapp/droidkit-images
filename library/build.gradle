@@ -9,6 +9,7 @@ buildscript {
 apply plugin: 'android-library'
 
 repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     mavenCentral()
 }
 
@@ -31,5 +32,7 @@ android {
 }
 
 dependencies {
+    compile 'com.droidkit:actors:0.2.+'
+    compile 'com.loopj.android:android-async-http:1.4.5'
     // compile fileTree(dir: 'libs', include: ['*.jar'])
 }

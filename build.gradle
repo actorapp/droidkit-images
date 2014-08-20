@@ -14,3 +14,13 @@ allprojects {
         mavenCentral()
     }
 }
+
+apply plugin: 'idea'
+
+idea {
+    //if you love browsing Javadoc
+    downloadJavadoc = true
+
+    //and hate reading sources :)
+    downloadSources = false
+}
