@@ -37,17 +37,14 @@ public class HttpImageActor extends TaskActor<Bitmap> {
 
     @Override
     public void startTask() {
-        Log.d("startTask");
         ask(DownloaderActor.download(url), new AskCallback<String>() {
             @Override
             public void onResult(String result) {
-                Log.d("downloaded");
                 onDownloaded(result);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("error");
                 error(throwable);
             }
         });
@@ -56,7 +53,6 @@ public class HttpImageActor extends TaskActor<Bitmap> {
     public void onDownloaded(String fileName) {
         try {
             complete(ImageLoading.loadBitmapOptimized(fileName));
-            Log.d("error");
         } catch (ImageLoadException e) {
             error(e);
         }

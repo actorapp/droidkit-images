@@ -7,6 +7,7 @@ import com.droidkit.actors.Props;
 import com.droidkit.actors.ReflectedActor;
 import com.droidkit.actors.tasks.AskCallback;
 import com.droidkit.images.loading.ImageReceiver;
+import com.droidkit.images.loading.actors.messages.CancelTask;
 import com.droidkit.images.loading.actors.messages.NotifyError;
 import com.droidkit.images.loading.actors.messages.NotifyImage;
 import com.droidkit.images.loading.actors.messages.RequestTask;
@@ -44,22 +45,27 @@ public class ReceiverActor extends ReflectedActor {
 
         if (requestTask.getRequest() instanceof String) {
             String url = (String) requestTask.getRequest();
-            Log.d(url);
             final int id = taskId;
             ask(HttpImageActor.load(url), new AskCallback<Bitmap>() {
 
                 @Override
                 public void onResult(Bitmap result) {
-                    Log.d("success");
-                    notifier.send(new NotifyImage(receiver.getId(), id, result));
+                    if (id == taskId) {
+                        notifier.send(new NotifyImage(receiver.getId(), id, result));
+                    }
                 }
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("error");
-                    notifier.send(new NotifyError(receiver.getId(), id));
+                    if (id == taskId) {
+                        notifier.send(new NotifyError(receiver.getId(), id));
+                    }
                 }
             });
         }
+    }
+
+    public void onReceive(CancelTask cancelTask) {
+
     }
 }

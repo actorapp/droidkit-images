@@ -33,7 +33,7 @@ public class DownloaderActor extends TaskActor<String> {
         });
     }
 
-    private RunnableDispatcher dispatcher = new RunnableDispatcher(2);
+    private static RunnableDispatcher dispatcher = new RunnableDispatcher(2);
 
     private String url;
     private String fileName;
@@ -46,29 +46,23 @@ public class DownloaderActor extends TaskActor<String> {
 
     @Override
     public void startTask() {
-        Log.d("startTask");
         runnable = new Runnable() {
             @Override
             public void run() {
                 try {
-                    Log.d(self(), "startDownload");
                     SyncHttpClient syncHttpClient = new SyncHttpClient();
                     syncHttpClient.get(url, new FileAsyncHttpResponseHandler(new File(fileName)) {
                         @Override
                         public void onSuccess(int i, Header[] headers, File file) {
-                            Log.d(self(), "onSuccess");
                             complete(file.getAbsolutePath());
                         }
 
                         @Override
                         public void onFailure(int i, Header[] headers, Throwable throwable, File file) {
-                            Log.d(self(), "onFailure");
                             error(throwable);
                         }
                     });
-                    Log.d(self(), "success");
                 } catch (Throwable t) {
-                    Log.d(self(), "error");
                     error(t);
                 }
             }
@@ -78,7 +72,6 @@ public class DownloaderActor extends TaskActor<String> {
 
     @Override
     public void onTaskObsolete() {
-        Log.d("onTaskObsolete");
         dispatcher.removeAction(runnable);
     }
 }
