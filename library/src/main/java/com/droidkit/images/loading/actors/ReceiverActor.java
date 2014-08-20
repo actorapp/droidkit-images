@@ -6,6 +6,7 @@ import com.droidkit.actors.ActorRef;
 import com.droidkit.actors.Props;
 import com.droidkit.actors.ReflectedActor;
 import com.droidkit.actors.tasks.AskCallback;
+import com.droidkit.actors.tasks.AskFuture;
 import com.droidkit.images.loading.ImageReceiver;
 import com.droidkit.images.loading.actors.messages.CancelTask;
 import com.droidkit.images.loading.actors.messages.NotifyError;
@@ -30,6 +31,7 @@ public class ReceiverActor extends ReflectedActor {
     private ImageReceiver receiver;
     private ActorRef notifier;
     private int taskId = -1;
+    private AskFuture future;
 
     public ReceiverActor(ImageReceiver receiver) {
         this.receiver = receiver;
@@ -46,7 +48,10 @@ public class ReceiverActor extends ReflectedActor {
         if (requestTask.getRequest() instanceof String) {
             String url = (String) requestTask.getRequest();
             final int id = taskId;
-            ask(HttpImageActor.load(url), new AskCallback<Bitmap>() {
+            if (future != null) {
+                future.cancel();
+            }
+            future = ask(HttpImageActor.load(url), new AskCallback<Bitmap>() {
 
                 @Override
                 public void onResult(Bitmap result) {
@@ -66,6 +71,9 @@ public class ReceiverActor extends ReflectedActor {
     }
 
     public void onReceive(CancelTask cancelTask) {
-
+        if (future != null) {
+            future.cancel();
+            future = null;
+        }
     }
 }

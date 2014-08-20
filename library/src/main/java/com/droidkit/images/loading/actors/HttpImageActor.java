@@ -5,6 +5,7 @@ import com.droidkit.actors.ActorCreator;
 import com.droidkit.actors.ActorSelection;
 import com.droidkit.actors.Props;
 import com.droidkit.actors.tasks.AskCallback;
+import com.droidkit.actors.tasks.AskFuture;
 import com.droidkit.actors.tasks.TaskActor;
 import com.droidkit.images.common.ImageLoadException;
 import com.droidkit.images.loading.log.Log;
@@ -30,6 +31,7 @@ public class HttpImageActor extends TaskActor<Bitmap> {
     }
 
     private String url;
+    private AskFuture future;
 
     public HttpImageActor(String url) {
         this.url = url;
@@ -37,7 +39,7 @@ public class HttpImageActor extends TaskActor<Bitmap> {
 
     @Override
     public void startTask() {
-        ask(DownloaderActor.download(url), new AskCallback<String>() {
+        future = ask(DownloaderActor.download(url), new AskCallback<String>() {
             @Override
             public void onResult(String result) {
                 onDownloaded(result);
@@ -56,5 +58,10 @@ public class HttpImageActor extends TaskActor<Bitmap> {
         } catch (ImageLoadException e) {
             error(e);
         }
+    }
+
+    @Override
+    public void onTaskObsolete() {
+        future.cancel();
     }
 }
