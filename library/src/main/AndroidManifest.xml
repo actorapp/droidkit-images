@@ -1,3 +1,4 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.droidkit.images">
+          package="com.droidkit.images">
+    <application></application>
 </manifest>

@@ -1,12 +1,12 @@
 package com.droidkit.images.loading;
 
-import android.graphics.Bitmap;
+import com.droidkit.images.cache.BitmapReference;
 
 /**
  * Created by ex3ndr on 20.08.14.
  */
 public interface ReceiverCallback {
-    public void onImageLoaded(Bitmap bitmap);
+    public void onImageLoaded(BitmapReference bitmap);
 
     public void onImageCleared();
 

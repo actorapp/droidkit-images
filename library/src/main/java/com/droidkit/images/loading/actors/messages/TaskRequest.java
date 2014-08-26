@@ -3,11 +3,11 @@ package com.droidkit.images.loading.actors.messages;
 /**
  * Created by ex3ndr on 20.08.14.
  */
-public class RequestTask {
+public class TaskRequest {
     private final int requestId;
     private final Object request;
 
-    public RequestTask(int requestId, Object request) {
+    public TaskRequest(int requestId, Object request) {
         this.requestId = requestId;
         this.request = request;
     }

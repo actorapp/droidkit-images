@@ -67,12 +67,12 @@ public class UsersListActivity extends ActionBarActivity {
                         listView.setAdapter(new BaseAdapter() {
                             @Override
                             public int getCount() {
-                                return records.size();
+                                return records.size() * 2;
                             }
 
                             @Override
                             public Record getItem(int position) {
-                                return records.get(position);
+                                return records.get(position / 2);
                             }
 
                             @Override

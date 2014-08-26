@@ -1,12 +1,13 @@
 package com.droidkit.images.loading.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import com.droidkit.images.cache.BitmapReference;
 import com.droidkit.images.loading.ImageLoader;
 import com.droidkit.images.loading.ImageReceiver;
 import com.droidkit.images.loading.ReceiverCallback;
+import com.droidkit.images.loading.tasks.RawUrlTask;
 
 /**
  * Created by ex3ndr on 20.08.14.
@@ -31,12 +32,12 @@ public class ImageKitView extends ImageView implements ReceiverCallback {
     }
 
     public void requestUrl(String url) {
-        receiver.requestUrl(url);
+        receiver.request(new RawUrlTask(url));
     }
 
     @Override
-    public void onImageLoaded(Bitmap bitmap) {
-        setImageBitmap(bitmap);
+    public void onImageLoaded(BitmapReference bitmap) {
+        setImageBitmap(bitmap.getBitmap());
     }
 
     @Override
