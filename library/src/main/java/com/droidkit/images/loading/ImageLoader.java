@@ -3,7 +3,11 @@ package com.droidkit.images.loading;
 import android.content.Context;
 import com.droidkit.actors.ActorSystem;
 import com.droidkit.actors.android.UiActorDispatcher;
-import com.droidkit.images.loading.config.Config;
+import com.droidkit.images.cache.DiskCache;
+import com.droidkit.images.cache.MemoryCache;
+import com.droidkit.images.loading.actors.RawUrlActor;
+import com.droidkit.images.loading.config.TaskResolver;
+import com.droidkit.images.loading.tasks.RawUrlTask;
 
 import java.util.HashSet;
 
@@ -14,14 +18,36 @@ public class ImageLoader {
     private ActorSystem actorSystem;
 
     private HashSet<ImageReceiver> receivers = new HashSet<ImageReceiver>();
+    private MemoryCache memoryCache;
+    private TaskResolver taskResolver;
+    private DiskCache internalDiskCache;
 
     public ImageLoader(Context context) {
-        Config.setContext(context);
         this.actorSystem = new ActorSystem();
         this.actorSystem.addDispatcher("ui", new UiActorDispatcher(actorSystem));
+        this.taskResolver = new TaskResolver(this);
+        this.memoryCache = new MemoryCache();
+        this.internalDiskCache = new DiskCache(context.getFilesDir().getAbsolutePath() + "dcache/");
+        initDefaultResolver();
     }
 
-    ActorSystem getActorSystem() {
+    private void initDefaultResolver() {
+        this.taskResolver.register(RawUrlTask.class, RawUrlActor.class);
+    }
+
+    public MemoryCache getMemoryCache() {
+        return memoryCache;
+    }
+
+    public DiskCache getInternalDiskCache() {
+        return internalDiskCache;
+    }
+
+    public TaskResolver getTaskResolver() {
+        return taskResolver;
+    }
+
+    public ActorSystem getActorSystem() {
         return actorSystem;
     }
 

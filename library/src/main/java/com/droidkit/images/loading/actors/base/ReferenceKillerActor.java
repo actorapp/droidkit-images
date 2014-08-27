@@ -1,9 +1,10 @@
-package com.droidkit.images.loading.actors;
+package com.droidkit.images.loading.actors.base;
 
 import com.droidkit.actors.Actor;
 import com.droidkit.actors.ActorSelection;
 import com.droidkit.actors.Props;
 import com.droidkit.images.cache.BitmapReference;
+import com.droidkit.images.loading.log.Log;
 
 /**
  * Created by ex3ndr on 27.08.14.
@@ -16,7 +17,9 @@ public class ReferenceKillerActor extends Actor {
     @Override
     public void onReceive(Object message) {
         if (message instanceof BitmapReference) {
-            ((BitmapReference) message).release();
+            BitmapReference reference = ((BitmapReference) message);
+            Log.d("Killing reference " + reference.getKey());
+            reference.release();
         }
     }
 }

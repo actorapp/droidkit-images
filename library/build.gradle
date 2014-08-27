@@ -19,7 +19,7 @@ android {
 }
 
 dependencies {
-    compile 'com.droidkit:actors:0.2.44'
+    compile 'com.droidkit:actors:0.2.48+'
     compile 'com.droidkit:actors-android:0.2.45@aar'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'com.android.support:support-v4:20.+'

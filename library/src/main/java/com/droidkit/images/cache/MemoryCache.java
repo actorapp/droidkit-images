@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import com.droidkit.images.loading.log.Log;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -27,5 +28,22 @@ public class MemoryCache {
         Log.d("onFreeBitmapAvailable");
         references.remove(reference.key);
         freeBitmaps.add(reference.bitmap);
+    }
+
+    public synchronized Bitmap findExactSize(int w, int h) {
+        Iterator<Bitmap> bitmapIterator = freeBitmaps.iterator();
+        while (bitmapIterator.hasNext()) {
+            Bitmap b = bitmapIterator.next();
+            if (b.getWidth() == w && b.getHeight() == h) {
+                bitmapIterator.remove();
+                return b;
+            }
+        }
+
+        return null;
+    }
+
+    public synchronized void putFree(Bitmap free) {
+        freeBitmaps.add(free);
     }
 }
