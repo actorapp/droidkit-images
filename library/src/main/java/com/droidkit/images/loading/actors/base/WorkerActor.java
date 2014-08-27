@@ -20,6 +20,10 @@ public abstract class WorkerActor<T> extends TaskActor<T> {
 
     @Override
     public void startTask() {
+        doStartTask();
+    }
+
+    protected final void doStartTask() {
         dispatcher.postAction(runnable);
     }
 

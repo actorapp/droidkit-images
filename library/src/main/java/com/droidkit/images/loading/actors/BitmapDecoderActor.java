@@ -10,6 +10,7 @@ import com.droidkit.images.common.ImageMetadata;
 import com.droidkit.images.common.ReuseResult;
 import com.droidkit.images.loading.ImageLoader;
 import com.droidkit.images.loading.actors.base.WorkerActor;
+import com.droidkit.images.loading.log.Log;
 import com.droidkit.images.ops.ImageLoading;
 import com.droidkit.images.sources.FileSource;
 import com.droidkit.images.util.HashUtil;
@@ -28,7 +29,7 @@ public class BitmapDecoderActor extends WorkerActor<Bitmap> {
         }), "dec_" + HashUtil.md5(fileName));
     }
 
-    private static RunnableDispatcher dispatcher = new RunnableDispatcher(1);
+    private static RunnableDispatcher dispatcher = new RunnableDispatcher(Runtime.getRuntime().availableProcessors());
 
     private String fileName;
     private MemoryCache memoryCache;
@@ -41,6 +42,7 @@ public class BitmapDecoderActor extends WorkerActor<Bitmap> {
 
     @Override
     protected Bitmap doWork() throws Exception {
+        long start = System.currentTimeMillis();
         FileSource fileSource = new FileSource(fileName);
         ImageMetadata metadata = fileSource.getImageMetadata();
         Bitmap reuse = memoryCache.findExactSize(metadata.getW(), metadata.getH());
@@ -51,6 +53,7 @@ public class BitmapDecoderActor extends WorkerActor<Bitmap> {
         if (!result.isReused()) {
             memoryCache.putFree(result.getRes());
         }
+        Log.d("Image loaded in " + (System.currentTimeMillis() - start) + " ms");
         return result.getRes();
     }
 }

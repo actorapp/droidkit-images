@@ -10,6 +10,7 @@ import com.droidkit.images.loading.actors.messages.ImageError;
 import com.droidkit.images.loading.actors.messages.ImageLoaded;
 import com.droidkit.images.loading.actors.messages.TaskRequest;
 import com.droidkit.images.cache.BitmapReference;
+import com.droidkit.images.loading.log.Log;
 import com.droidkit.images.loading.tasks.AbsTask;
 import com.droidkit.images.util.UiUtil;
 
@@ -33,6 +34,8 @@ public class ImageReceiver {
     private int currentTask = -1;
     private BitmapReference reference;
 
+    private long requestStart;
+
     ImageReceiver(ImageLoader loader, ReceiverCallback receiverCallback) {
         this.id = RECEIVER_ID.incrementAndGet();
         this.actorSystem = loader.getActorSystem();
@@ -52,6 +55,7 @@ public class ImageReceiver {
         if (!UiUtil.isMainThread()) {
             throw new RuntimeException("Operations allowed only on UI thread");
         }
+        requestStart = System.currentTimeMillis();
         clear();
         receiver.send(new TaskRequest(currentTask, task));
     }
@@ -87,6 +91,8 @@ public class ImageReceiver {
         }
         reference = loaded.getReference();
         receiverCallback.onImageLoaded(reference);
+
+        Log.d("Loaded image in " + (System.currentTimeMillis() - requestStart) + " ms");
     }
 
     // TODO: hide

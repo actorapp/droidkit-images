@@ -37,21 +37,11 @@ public abstract class BasicTaskActor<T extends AbsTask> extends TaskActor<Bitmap
         BitmapReference reference = loader.getMemoryCache().referenceBitmap(task.getKey(), bitmap);
         complete(reference);
 
-        Log.d("Mailbox1 " + toString());
-        for (Envelope envelope : getMailbox().allEnvelopes()) {
-            Log.d("Envelope:" + envelope.getMessage());
-        }
-
         // All results supposed to be delivered to actors that works in UI thread
         // for now this is only ReceiverActor.
         // So, sending reference killer to ui actor will perform releasing references after
         // all notificaitons in UI
         self().send(reference);
-
-        Log.d("Mailbox2 " + toString());
-        for (Envelope envelope : getMailbox().allEnvelopes()) {
-            Log.d("Envelope:" + envelope.getMessage());
-        }
     }
 
     @Override

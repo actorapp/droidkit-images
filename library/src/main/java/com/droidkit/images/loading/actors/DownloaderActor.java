@@ -43,40 +43,43 @@ public class DownloaderActor extends WorkerActor<String> {
     }
 
     @Override
-    protected String doWork() throws Exception {
-        Log.d(self(), "CheckCache");
+    public void startTask() {
         String cachedFileName = cache.lockFile(url);
         if (cachedFileName != null) {
-            Log.d("Founded in cache");
+            complete(cachedFileName);
+            return;
+        }
+
+        doStartTask();
+    }
+
+    @Override
+    protected String doWork() throws Exception {
+        String cachedFileName = cache.lockFile(url);
+        if (cachedFileName != null) {
             return cachedFileName;
         }
 
         String fileName = cache.startWriteFile(url);
-
-        Log.d(self(), "Started writing to file: " + fileName);
 
         SyncHttpClient syncHttpClient = new SyncHttpClient();
         syncHttpClient.get(url, new FileAsyncHttpResponseHandler(new File(fileName)) {
             @Override
             public void onSuccess(int i, Header[] headers, File file) {
                 // Just do nothing
-                Log.d(self(), "Dowload success");
             }
 
             @Override
             public void onFailure(int i, Header[] headers, Throwable throwable, File file) {
-                Log.d(self(), "Dowload failure");
                 throw new RuntimeException(throwable);
             }
         });
 
-        Log.d(self(), "Commiting file");
         String resultFileName = cache.commitFile(url);
         if (resultFileName != null) {
             return resultFileName;
         }
 
-        Log.d(self(), "Unable to commit file");
         throw new RuntimeException("Unable to commit file");
     }
 }

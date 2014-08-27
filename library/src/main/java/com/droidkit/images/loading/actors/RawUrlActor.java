@@ -16,6 +16,7 @@ import com.droidkit.images.ops.ImageLoading;
 public class RawUrlActor extends BasicTaskActor<RawUrlTask> {
 
     private AskFuture future;
+    private long start;
 
     public RawUrlActor(RawUrlTask task, ImageLoader loader) {
         super(task, loader);
@@ -23,34 +24,30 @@ public class RawUrlActor extends BasicTaskActor<RawUrlTask> {
 
     @Override
     public void startTask() {
-        Log.d("StartDownload");
+        start = System.currentTimeMillis();
         future = ask(DownloaderActor.download(getTask().getUrl(), getLoader()), new AskCallback<String>() {
             @Override
             public void onResult(String result) {
-                Log.d("Download Success");
                 onDownloaded(result);
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("Download Error");
                 error(throwable);
             }
         });
     }
 
     public void onDownloaded(String fileName) {
-        Log.d("StartDecode");
         future = ask(BitmapDecoderActor.decode(fileName, getLoader()), new AskCallback<Bitmap>() {
             @Override
             public void onResult(Bitmap bitmap) {
-                Log.d("DecodeSuccess");
                 completeTask(bitmap);
+                Log.d("UrlLoaded in " + (System.currentTimeMillis() - start) + " ms");
             }
 
             @Override
             public void onError(Throwable throwable) {
-                Log.d("DecodeError");
                 error(throwable);
             }
         });

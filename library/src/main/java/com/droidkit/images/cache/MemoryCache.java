@@ -25,7 +25,6 @@ public class MemoryCache {
 
     /* package */
     synchronized void onReferenceDie(BaseBitmapReference reference) {
-        Log.d("onFreeBitmapAvailable");
         references.remove(reference.key);
         freeBitmaps.add(reference.bitmap);
     }

@@ -41,8 +41,6 @@ public final class ReceiverActor extends Actor {
 
         if (message instanceof TaskRequest) {
             final TaskRequest taskRequest = (TaskRequest) message;
-            Log.d("RequestTask #" + taskRequest.getRequest().getKey());
-
             taskId = taskRequest.getRequestId();
             final int currentId = taskId;
             // Cancel current work
@@ -51,18 +49,15 @@ public final class ReceiverActor extends Actor {
                 future = ask(resolver.resolveSelection(taskRequest.getRequest()), new AskCallback<BitmapReference>() {
                     @Override
                     public void onResult(BitmapReference result) {
-                        Log.d("TaskResult #" + taskRequest.getRequest().getKey());
                         receiver.onImageLoaded(new ImageLoaded(currentId, result.fork()));
                     }
 
                     @Override
                     public void onError(Throwable throwable) {
-                        Log.d("TaskError #" + taskRequest.getRequest().getKey());
                         receiver.onImageError(new ImageError(currentId, throwable));
                     }
                 });
             } catch (Exception e) {
-                Log.d("RequestTaskError #" + ((TaskRequest) message).getRequest().getKey());
                 receiver.onImageError(new ImageError(currentId, e));
             }
         } else if (message instanceof TaskCancel) {

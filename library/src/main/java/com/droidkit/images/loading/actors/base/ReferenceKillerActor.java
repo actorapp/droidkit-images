@@ -18,7 +18,6 @@ public class ReferenceKillerActor extends Actor {
     public void onReceive(Object message) {
         if (message instanceof BitmapReference) {
             BitmapReference reference = ((BitmapReference) message);
-            Log.d("Killing reference " + reference.getKey());
             reference.release();
         }
     }
